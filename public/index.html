@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080d1c" />
+
+    <title>Free Games Notifier | Never miss a free game</title>
+
+    <meta
+      name="description"
+      content="Get notified when games become free on Steam and Epic Games. Never miss a free game!"
+    />
+
+    <link rel="icon" type="image/png" href="/logo.png" />
+
+    <style>
+      :root {
+        --bg: #080d1c;
+        --bg-secondary: #0d1528;
+        --surface: #111c32;
+        --surface-hover: #172540;
+        --primary: #3b82f6;
+        --secondary: #8b5cf6;
+        --cyan: #5ce1e6;
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --border: rgba(148, 163, 184, 0.15);
+        --gradient: linear-gradient(135deg, #2563eb, #7c3aed);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family:
+          Inter,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .container {
+        width: min(1120px, calc(100% - 40px));
+        margin: 0 auto;
+      }
+
+      /* Header */
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(8, 13, 28, 0.85);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .navbar {
+        min-height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 750;
+        letter-spacing: -0.4px;
+      }
+
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .nav-links a:hover {
+        color: var(--text);
+      }
+
+      .language-button {
+        border: 1px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        padding: 8px 13px;
+        border-radius: 9px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+      }
+
+      .language-button:hover {
+        background: var(--surface-hover);
+      }
+
+      /* Hero */
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 100px 0 110px;
+        text-align: center;
+      }
+
+      .hero::before {
+        content: '';
+        position: absolute;
+        width: 650px;
+        height: 500px;
+        top: -180px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(
+          ellipse,
+          rgba(59, 130, 246, 0.2),
+          rgba(124, 58, 237, 0.12) 45%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .hero-content {
+        position: relative;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+
+      .hero-logo {
+        width: 170px;
+        height: 170px;
+        object-fit: contain;
+        margin-bottom: 30px;
+        filter: drop-shadow(0 15px 45px rgba(59, 130, 246, 0.25));
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 13px;
+        border: 1px solid rgba(92, 225, 230, 0.2);
+        background: rgba(92, 225, 230, 0.07);
+        color: var(--cyan);
+        border-radius: 100px;
+        font-size: 0.8rem;
+        font-weight: 650;
+        margin-bottom: 22px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        line-height: 1.08;
+        letter-spacing: -2.5px;
+        margin-bottom: 24px;
+      }
+
+      .gradient-text {
+        background: linear-gradient(90deg, #60a5fa, #a78bfa, #5ce1e6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-description {
+        max-width: 620px;
+        margin: 0 auto;
+        color: var(--muted);
+        font-size: 1.12rem;
+      }
+
+      .hero-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 36px;
+      }
+
+      .button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        min-height: 50px;
+        padding: 0 23px;
+        border-radius: 11px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition:
+          transform 0.2s,
+          filter 0.2s,
+          background 0.2s;
+      }
+
+      .button:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+
+      .button-primary {
+        background: var(--gradient);
+        color: white;
+        box-shadow: 0 8px 28px rgba(59, 130, 246, 0.2);
+      }
+
+      .button-secondary {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      /* General sections */
+
+      section {
+        padding: 85px 0;
+      }
+
+      .section-heading {
+        text-align: center;
+        max-width: 650px;
+        margin: 0 auto 48px;
+      }
+
+      .section-heading h2 {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        letter-spacing: -1px;
+        margin-bottom: 14px;
+      }
+
+      .section-heading p {
+        color: var(--muted);
+      }
+
+      .section-label {
+        display: block;
+        color: var(--cyan);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        font-weight: 750;
+        letter-spacing: 1.5px;
+        margin-bottom: 12px;
+      }
+
+      /* Games */
+
+      .games-section {
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .games-placeholder {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 52px 28px;
+        text-align: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+      }
+
+      .games-icon {
+        width: 64px;
+        height: 64px;
+        display: grid;
+        place-items: center;
+        margin: 0 auto 20px;
+        border-radius: 18px;
+        background: var(--gradient);
+        font-size: 1.8rem;
+      }
+
+      .games-placeholder h3 {
+        font-size: 1.35rem;
+        margin-bottom: 10px;
+      }
+
+      .games-placeholder p {
+        color: var(--muted);
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .coming-soon {
+        display: inline-block;
+        margin-top: 22px;
+        padding: 6px 12px;
+        color: #c4b5fd;
+        background: rgba(139, 92, 246, 0.12);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+
+      /* Platforms */
+
+      .platform-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+      }
+
+      .platform-card {
+        padding: 32px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 17px;
+        transition:
+          transform 0.2s,
+          border-color 0.2s;
+      }
+
+      .platform-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(96, 165, 250, 0.45);
+      }
+
+      .platform-icon {
+        width: 52px;
+        height: 52px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: rgba(59, 130, 246, 0.12);
+        font-size: 1.6rem;
+        margin-bottom: 22px;
+      }
+
+      .platform-card h3 {
+        font-size: 1.35rem;
+        margin-bottom: 10px;
+      }
+
+      .platform-card p {
+        color: var(--muted);
+        margin-bottom: 22px;
+      }
+
+      .text-link {
+        color: #93c5fd;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .text-link:hover {
+        color: var(--cyan);
+      }
+
+      /* How it works */
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+
+      .step-card {
+        padding: 28px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+      }
+
+      .step-number {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--gradient);
+        font-weight: 800;
+        margin-bottom: 22px;
+      }
+
+      .step-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+      }
+
+      .step-card p {
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      /* CTA */
+
+      .cta-section {
+        padding: 75px 0;
+        background:
+          radial-gradient(
+            ellipse at 50% 100%,
+            rgba(124, 58, 237, 0.2),
+            transparent 65%
+          ),
+          var(--bg-secondary);
+        border-top: 1px solid var(--border);
+      }
+
+      .cta-content {
+        max-width: 680px;
+        text-align: center;
+        margin: 0 auto;
+      }
+
+      .cta-content h2 {
+        font-size: clamp(2rem, 4vw, 2.7rem);
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+      }
+
+      .cta-content p {
+        color: var(--muted);
+        margin-bottom: 28px;
+      }
+
+      /* Footer */
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 30px 0;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .footer-brand {
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 22px;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .footer-links a:hover {
+        color: var(--text);
+      }
+
+      @media (max-width: 760px) {
+        .nav-links {
+          gap: 14px;
+        }
+
+        .nav-links a {
+          display: none;
+        }
+
+        .hero {
+          padding: 75px 0 85px;
+        }
+
+        .hero-logo {
+          width: 140px;
+          height: 140px;
+        }
+
+        .platform-grid,
+        .steps-grid {
+          grid-template-columns: 1fr;
+        }
+
+        section {
+          padding: 65px 0;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .container {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .brand {
+          font-size: 0.9rem;
+        }
+
+        .hero h1 {
+          letter-spacing: -1.5px;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+        }
+
+        .hero-actions .button {
+          width: 100%;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container navbar">
+        <a href="/" class="brand">
+          <img src="/logo.png" alt="" />
+          <span>Free Games Notifier</span>
+        </a>
+
+        <nav class="nav-links">
+          <a href="#games" data-en="Free Games" data-es="Juegos gratis"
+            >Free Games</a
+          >
+          <a href="#platforms" data-en="Platforms" data-es="Plataformas"
+            >Platforms</a
+          >
+          <a href="#how-it-works" data-en="How it works" data-es="Cómo funciona"
+            >How it works</a
+          >
+        </nav>
+
+        <button
+          class="language-button"
+          id="language-toggle"
+          type="button"
+          aria-label="Switch language"
+        >
+          ES
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="container hero-content">
+          <img
+            src="/logo.png"
+            alt="Free Games Notifier logo"
+            class="hero-logo"
+            width="170"
+            height="170"
+          />
+
+          <div class="eyebrow">
+            <span>✦</span>
+            <span
+              data-en="Free games. Zero missed opportunities."
+              data-es="Juegos gratis. Ninguna oportunidad perdida."
+            >
+              Free games. Zero missed opportunities.
+            </span>
+          </div>
+
+          <h1>
+            <span data-en="Never miss a" data-es="No te pierdas ningún"
+              >Never miss a</span
+            >
+            <span
+              class="gradient-text"
+              data-en="free game."
+              data-es="juego gratis."
+              >free game.</span
+            >
+          </h1>
+
+          <p
+            class="hero-description"
+            data-en="Get notified when games become free on Steam and Epic Games. Let Free Games Notifier keep you up to date, so you can focus on playing."
+            data-es="Recibí notificaciones cuando haya juegos gratis en Steam y Epic Games. Dejá que Free Games Notifier te mantenga al día mientras vos te ocupás de jugar."
+          >
+            Get notified when games become free on Steam and Epic Games. Let
+            Free Games Notifier keep you up to date, so you can focus on
+            playing.
+          </p>
+
+          <div class="hero-actions">
+            <!-- Replace these URLs with your actual bot links -->
+            <a
+              class="button button-primary"
+              href="https://discord.com/oauth2/authorize?client_id=YOUR_DISCORD_APPLICATION_ID&scope=bot%20applications.commands"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Discord</span>
+              <span>↗</span>
+            </a>
+
+            <a
+              class="button button-secondary"
+              href="https://t.me/YOUR_TELEGRAM_BOT_USERNAME"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Telegram</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Free games -->
+      <section class="games-section" id="games">
+        <div class="container">
+          <div class="section-heading">
+            <span class="section-label" data-en="Discover" data-es="Descubrí"
+              >Discover</span
+            >
+
+            <h2
+              data-en="Free games, all in one place."
+              data-es="Juegos gratis, todo en un solo lugar."
+            >
+              Free games, all in one place.
+            </h2>
+
+            <p
+              data-en="Find out which games are currently free and where to claim them."
+              data-es="Descubrí qué juegos están gratis y dónde podés reclamarlos."
+            >
+              Find out which games are currently free and where to claim them.
+            </p>
+          </div>
+
+          <!-- Future API: GET /api/games/current -->
+          <div class="games-placeholder" id="games-grid">
+            <div class="games-icon">🎁</div>
+
+            <h3
+              data-en="Something exciting is coming."
+              data-es="Se viene algo interesante."
+            >
+              Something exciting is coming.
+            </h3>
+
+            <p
+              data-en="We're working on bringing the latest free game deals directly to this page. Check back soon!"
+              data-es="Estamos trabajando para mostrar las últimas promociones de juegos gratis directamente en esta página. ¡Volvé pronto!"
+            >
+              We're working on bringing the latest free game deals directly to
+              this page. Check back soon!
+            </p>
+
+            <span
+              class="coming-soon"
+              data-en="COMING SOON"
+              data-es="PRÓXIMAMENTE"
+            >
+              COMING SOON
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Platforms -->
+      <section id="platforms">
+        <div class="container">
+          <div class="section-heading">
+            <span
+              class="section-label"
+              data-en="Supported platforms"
+              data-es="Plataformas disponibles"
+              >Supported platforms</span
+            >
+
+            <h2
+              data-en="Your favorite stores."
+              data-es="Tus tiendas favoritas."
+            >
+              Your favorite stores.
+            </h2>
+
+            <p
+              data-en="We keep an eye on the stores so you don't have to."
+              data-es="Nosotros estamos atentos a las tiendas para que vos no tengas que hacerlo."
+            >
+              We keep an eye on the stores so you don't have to.
+            </p>
+          </div>
+
+          <div class="platform-grid">
+            <article class="platform-card">
+              <div class="platform-icon">🎮</div>
+
+              <h3>Steam</h3>
+
+              <p
+                data-en="Discover free games and limited-time promotions from the Steam store."
+                data-es="Descubrí juegos gratuitos y promociones por tiempo limitado de la tienda Steam."
+              >
+                Discover free games and limited-time promotions from the Steam
+                store.
+              </p>
+
+              <a
+                class="text-link"
+                href="https://store.steampowered.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Steam Store ↗
+              </a>
+            </article>
+
+            <article class="platform-card">
+              <div class="platform-icon">🕹️</div>
+
+              <h3>Epic Games</h3>
+
+              <p
+                data-en="Stay updated with the free games offered by the Epic Games Store."
+                data-es="Enterate de los juegos gratuitos que ofrece Epic Games Store."
+              >
+                Stay updated with the free games offered by the Epic Games
+                Store.
+              </p>
+
+              <a
+                class="text-link"
+                href="https://store.epicgames.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Epic Games Store ↗
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how-it-works" class="games-section">
+        <div class="container">
+          <div class="section-heading">
+            <span
+              class="section-label"
+              data-en="Simple and easy"
+              data-es="Simple y fácil"
+              >Simple and easy</span
+            >
+
+            <h2 data-en="How does it work?" data-es="¿Cómo funciona?">
+              How does it work?
+            </h2>
+
+            <p
+              data-en="Getting notified about free games takes just a few steps."
+              data-es="Recibir notificaciones sobre juegos gratis lleva solo unos pocos pasos."
+            >
+              Getting notified about free games takes just a few steps.
+            </p>
+          </div>
+
+          <div class="steps-grid">
+            <article class="step-card">
+              <div class="step-number">1</div>
+
+              <h3 data-en="Add the bot" data-es="Agregá el bot">Add the bot</h3>
+
+              <p
+                data-en="Invite Free Games Notifier to your Discord server or start a conversation on Telegram."
+                data-es="Invitá a Free Games Notifier a tu servidor de Discord o iniciá una conversación en Telegram."
+              >
+                Invite Free Games Notifier to your Discord server or start a
+                conversation on Telegram.
+              </p>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">2</div>
+
+              <h3 data-en="Subscribe" data-es="Suscribite">Subscribe</h3>
+
+              <p
+                data-en="Enable notifications to receive updates when new free games become available."
+                data-es="Activá las notificaciones para enterarte cuando haya nuevos juegos gratuitos."
+              >
+                Enable notifications to receive updates when new free games
+                become available.
+              </p>
+            </article>
+
+            <article class="step-card">
+              <div class="step-number">3</div>
+
+              <h3 data-en="Claim your games" data-es="Reclamá tus juegos">
+                Claim your games
+              </h3>
+
+              <p
+                data-en="Follow the notification links, visit the store and add the games to your library."
+                data-es="Seguí los enlaces de las notificaciones, visitá la tienda y agregá los juegos a tu biblioteca."
+              >
+                Follow the notification links, visit the store and add the games
+                to your library.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="cta-section">
+        <div class="container cta-content">
+          <h2
+            data-en="Ready to get more games?"
+            data-es="¿Listo para sumar más juegos?"
+          >
+            Ready to get more games?
+          </h2>
+
+          <p
+            data-en="Join Free Games Notifier and never miss another free game promotion."
+            data-es="Sumate a Free Games Notifier y no te pierdas ninguna promoción de juegos gratuitos."
+          >
+            Join Free Games Notifier and never miss another free game promotion.
+          </p>
+
+          <div class="hero-actions">
+            <a
+              class="button button-primary"
+              href="https://discord.com/oauth2/authorize?client_id=YOUR_DISCORD_APPLICATION_ID&scope=bot%20applications.commands"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-en="Add to Discord ↗"
+              data-es="Agregar a Discord ↗"
+            >
+              Add to Discord ↗
+            </a>
+
+            <a
+              class="button button-secondary"
+              href="https://t.me/YOUR_TELEGRAM_BOT_USERNAME"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-en="Open Telegram ↗"
+              data-es="Abrir Telegram ↗"
+            >
+              Open Telegram ↗
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container footer-content">
+        <div class="footer-brand">
+          © <span id="current-year"></span> Free Games Notifier.
+          <span
+            data-en="All rights reserved."
+            data-es="Todos los derechos reservados."
+            >All rights reserved.</span
+          >
+        </div>
+
+        <div class="footer-links">
+          <a
+            href="/privacy"
+            data-en="Privacy Policy"
+            data-es="Política de privacidad"
+          >
+            Privacy Policy
+          </a>
+
+          <a
+            href="https://t.me/tehpon"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-en="Contact"
+            data-es="Contacto"
+          >
+            Contact
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const languageToggle = document.getElementById('language-toggle');
+
+      let currentLanguage = 'en';
+
+      function setLanguage(language) {
+        currentLanguage = language;
+
+        document.documentElement.lang = language;
+
+        document.querySelectorAll('[data-en][data-es]').forEach((element) => {
+          element.textContent = element.dataset[language];
+        });
+
+        languageToggle.textContent = language === 'en' ? 'ES' : 'EN';
+
+        languageToggle.setAttribute(
+          'aria-label',
+          language === 'en'
+            ? 'Cambiar idioma a español'
+            : 'Switch language to English',
+        );
+
+        document.title =
+          language === 'en'
+            ? 'Free Games Notifier | Never miss a free game'
+            : 'Free Games Notifier | No te pierdas ningún juego gratis';
+      }
+
+      languageToggle.addEventListener('click', () => {
+        setLanguage(currentLanguage === 'en' ? 'es' : 'en');
+      });
+
+      document.getElementById('current-year').textContent =
+        new Date().getFullYear();
+
+      setLanguage('en');
+    </script>
+  </body>
+</html>
