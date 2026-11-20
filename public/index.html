@@ -14,6 +14,11 @@
 
     <link rel="icon" type="image/png" href="/logo.png" />
 
+    <script
+      src="https://kit.fontawesome.com/17ae34bd66.js"
+      crossorigin="anonymous"
+    ></script>
+
     <style>
       :root {
         --bg: #080d1c;
@@ -159,10 +164,11 @@
       }
 
       .hero-logo {
+        display: block;
         width: 170px;
         height: 170px;
         object-fit: contain;
-        margin-bottom: 30px;
+        margin: 0 auto 30px;
         filter: drop-shadow(0 15px 45px rgba(59, 130, 246, 0.25));
       }
 
@@ -223,6 +229,20 @@
           transform 0.2s,
           filter 0.2s,
           background 0.2s;
+      }
+
+      .button i {
+        font-size: 1.1rem;
+      }
+
+      .button .fa-arrow-up-right-from-square {
+        font-size: 0.75rem;
+        opacity: 0.8;
+      }
+
+      .text-link i {
+        font-size: 0.75rem;
+        margin-left: 4px;
       }
 
       .button:hover {
@@ -300,9 +320,9 @@
         margin: 0 auto 20px;
         border-radius: 18px;
         background: var(--gradient);
-        font-size: 1.8rem;
+        font-size: 1.7rem;
+        color: white;
       }
-
       .games-placeholder h3 {
         font-size: 1.35rem;
         margin-bottom: 10px;
@@ -356,7 +376,8 @@
         place-items: center;
         border-radius: 14px;
         background: rgba(59, 130, 246, 0.12);
-        font-size: 1.6rem;
+        color: #93c5fd;
+        font-size: 1.7rem;
         margin-bottom: 22px;
       }
 
@@ -615,22 +636,30 @@
             <!-- Replace these URLs with your actual bot links -->
             <a
               class="button button-primary"
-              href="https://discord.com/oauth2/authorize?client_id=YOUR_DISCORD_APPLICATION_ID&scope=bot%20applications.commands"
+              href="TU_DISCORD_INVITE_URL"
               target="_blank"
               rel="noopener noreferrer"
             >
+              <i class="fa-brands fa-discord" aria-hidden="true"></i>
               <span>Discord</span>
-              <span>↗</span>
+              <i
+                class="fa-solid fa-arrow-up-right-from-square"
+                aria-hidden="true"
+              ></i>
             </a>
 
             <a
               class="button button-secondary"
-              href="https://t.me/YOUR_TELEGRAM_BOT_USERNAME"
+              href="TU_TELEGRAM_BOT_URL"
               target="_blank"
               rel="noopener noreferrer"
             >
+              <i class="fa-brands fa-telegram" aria-hidden="true"></i>
               <span>Telegram</span>
-              <span>↗</span>
+              <i
+                class="fa-solid fa-arrow-up-right-from-square"
+                aria-hidden="true"
+              ></i>
             </a>
           </div>
         </div>
@@ -661,7 +690,9 @@
 
           <!-- Future API: GET /api/games/current -->
           <div class="games-placeholder" id="games-grid">
-            <div class="games-icon">🎁</div>
+            <div class="games-icon">
+              <i class="fa-solid fa-gift" aria-hidden="true"></i>
+            </div>
 
             <h3
               data-en="Something exciting is coming."
@@ -717,7 +748,9 @@
 
           <div class="platform-grid">
             <article class="platform-card">
-              <div class="platform-icon">🎮</div>
+              <div class="platform-icon">
+                <i class="fa-brands fa-steam" aria-hidden="true"></i>
+              </div>
 
               <h3>Steam</h3>
 
@@ -735,12 +768,18 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Steam Store ↗
+                Steam Store
+                <i
+                  class="fa-solid fa-arrow-up-right-from-square"
+                  aria-hidden="true"
+                ></i>
               </a>
             </article>
 
             <article class="platform-card">
-              <div class="platform-icon">🕹️</div>
+              <div class="platform-icon">
+                <i class="fa-solid fa-gamepad" aria-hidden="true"></i>
+              </div>
 
               <h3>Epic Games</h3>
 
@@ -758,7 +797,11 @@
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Epic Games Store ↗
+                Epic Games Store
+                <i
+                  class="fa-solid fa-arrow-up-right-from-square"
+                  aria-hidden="true"
+                ></i>
               </a>
             </article>
           </div>
@@ -856,24 +899,30 @@
           <div class="hero-actions">
             <a
               class="button button-primary"
-              href="https://discord.com/oauth2/authorize?client_id=YOUR_DISCORD_APPLICATION_ID&scope=bot%20applications.commands"
+              href="TU_DISCORD_INVITE_URL"
               target="_blank"
               rel="noopener noreferrer"
-              data-en="Add to Discord ↗"
-              data-es="Agregar a Discord ↗"
+              data-en="Add to Discord"
+              data-es="Agregar a Discord"
             >
-              Add to Discord ↗
+              <i class="fa-brands fa-discord" aria-hidden="true"></i>
+              <span data-en="Add to Discord" data-es="Agregar a Discord"
+                >Add to Discord</span
+              >
             </a>
 
             <a
               class="button button-secondary"
-              href="https://t.me/YOUR_TELEGRAM_BOT_USERNAME"
+              href="TU_TELEGRAM_BOT_URL"
               target="_blank"
               rel="noopener noreferrer"
-              data-en="Open Telegram ↗"
-              data-es="Abrir Telegram ↗"
+              data-en="Open Telegram"
+              data-es="Abrir Telegram"
             >
-              Open Telegram ↗
+              <i class="fa-brands fa-telegram" aria-hidden="true"></i>
+              <span data-en="Open Telegram" data-es="Abrir Telegram"
+                >Open Telegram</span
+              >
             </a>
           </div>
         </div>
