@@ -71,13 +71,7 @@ function getGameImageUrl(game) {
       return null;
     }
 
-    // Epic images use the Vercel image proxy.
-    if (game.source === 'epic') {
-      return `/api/image?url=${encodeURIComponent(imageUrl.href)}`;
-    }
-
-    // Steam images are loaded directly.
-    return imageUrl.href;
+    return `/api/image?url=${encodeURIComponent(imageUrl.href)}`;
   } catch {
     return null;
   }
@@ -284,6 +278,66 @@ async function loadGames() {
   }
 }
 
+function updateGameExpiration(element, endDate) {
+  const expirationDate = new Date(endDate);
+  const remainingMs = expirationDate.getTime() - Date.now();
+
+  element.replaceChildren();
+  element.classList.remove('urgent');
+
+  if (Number.isNaN(expirationDate.getTime())) {
+    element.textContent =
+      currentLanguage === 'en'
+        ? 'End date unavailable'
+        : 'Fecha de finalización no disponible';
+
+    return;
+  }
+
+  if (remainingMs > 0 && remainingMs < 60 * 60 * 1000) {
+    element.classList.add('urgent');
+
+    const minutes = Math.ceil(remainingMs / (60 * 1000));
+
+    const icon = document.createElement('i');
+    icon.className = 'fa-solid fa-clock';
+    icon.setAttribute('aria-hidden', 'true');
+
+    const message = document.createElement('span');
+
+    if (currentLanguage === 'en') {
+      message.textContent =
+        minutes > 1
+          ? `Last minutes! ${minutes} min left`
+          : 'Last minute! Less than 1 min left';
+    } else {
+      message.textContent =
+        minutes > 1
+          ? `¡Últimos minutos! Quedan ${minutes} min`
+          : '¡Último minuto! Menos de 1 min';
+    }
+
+    element.append(icon, message);
+
+    return;
+  }
+
+  element.textContent =
+    `${currentLanguage === 'en' ? 'Available until' : 'Disponible hasta'}: ` +
+    getGameDate(endDate);
+}
+
+function updateAllGameExpirations() {
+  document
+    .querySelectorAll('.game-expiration[data-end-date]')
+    .forEach((element) => {
+      updateGameExpiration(element, element.dataset.endDate);
+    });
+}
+
 document.getElementById('current-year').textContent = new Date().getFullYear();
 loadGames();
 setLanguage('en');
+
+// Update expiration indicators every 30 seconds.
+setInterval(updateAllGameExpirations, 30000);

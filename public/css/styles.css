@@ -675,3 +675,28 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+.game-expiration {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.game-expiration.urgent {
+  color: #f87171;
+  font-weight: 700;
+}
+
+.game-expiration.urgent i {
+  color: #ef4444;
+}
+
+.game-expiration.urgent {
+  background: rgba(239, 68, 68, 0.09);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
