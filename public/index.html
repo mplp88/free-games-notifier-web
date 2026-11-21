@@ -155,34 +155,8 @@
           </div>
 
           <!-- Future API: GET /api/games/current -->
-          <div class="games-placeholder" id="games-grid">
-            <div class="games-icon">
-              <i class="fa-solid fa-gift" aria-hidden="true"></i>
-            </div>
-
-            <h3
-              data-en="Something exciting is coming."
-              data-es="Se viene algo interesante."
-            >
-              Something exciting is coming.
-            </h3>
-
-            <p
-              data-en="We're working on bringing the latest free game deals directly to this page. Check back soon!"
-              data-es="Estamos trabajando para mostrar las últimas promociones de juegos gratis directamente en esta página. ¡Volvé pronto!"
-            >
-              We're working on bringing the latest free game deals directly to
-              this page. Check back soon!
-            </p>
-
-            <span
-              class="coming-soon"
-              data-en="COMING SOON"
-              data-es="PRÓXIMAMENTE"
-            >
-              COMING SOON
-            </span>
-          </div>
+          <div id="games-status" class="games-status" aria-live="polite"></div>
+          <div id="games-grid" class="games-grid"></div>
         </div>
       </section>
 
