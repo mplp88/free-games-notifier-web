@@ -140,7 +140,7 @@ function createGameCard(game) {
 
   const expiration = document.createElement('p');
   expiration.className = 'game-expiration';
-  expiration.dataset.endDate(game.endDate);
+  expiration.dataset.endDate = game.endDate;
 
   expiration.textContent =
     `${currentLanguage === 'en' ? 'Available until' : 'Disponible hasta'}: ` +
