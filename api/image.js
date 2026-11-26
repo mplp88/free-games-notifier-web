@@ -1,4 +1,11 @@
-const ALLOWED_HOSTS = ['cdn1.epicgames.com', 'cdn2.unrealengine.com'];
+import sharp from 'sharp';
+
+const ALLOWED_HOSTS = [
+  'cdn1.epicgames.com',
+  'cdn2.unrealengine.com',
+  'shared.fastly.steamstatic.com',
+  'cdn.akamai.steamstatic.com',
+];
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -35,15 +42,39 @@ export default async function handler(req, res) {
 
     const image = Buffer.from(await response.arrayBuffer());
 
+    // Límite de tamaño de la imagen original.
     if (image.length > 5 * 1024 * 1024) {
       return res.status(413).send('Image too large');
     }
 
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', 'inline');
-    res.setHeader('Cache-Control', 'public, max-age=86400');
+    // Redimensionamos y convertimos a WebP.
+    const optimizedImage = await sharp(image, {
+      animated: contentType === 'image/gif',
+      limitInputPixels: 40_000_000,
+    })
+      .resize({
+        width: 840,
+        height: 480,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({
+        quality: 80,
+        effort: 4,
+      })
+      .toBuffer();
 
-    return res.status(200).send(image);
+    res.setHeader('Content-Type', 'image/webp');
+    res.setHeader('Content-Disposition', 'inline');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+
+    // Cache del navegador y de la CDN.
+    res.setHeader(
+      'Cache-Control',
+      'public, max-age=86400, s-maxage=604800, stale-while-revalidate=86400',
+    );
+
+    return res.status(200).send(optimizedImage);
   } catch (error) {
     console.error('Image proxy error:', error.message);
     return res.status(502).send('Unable to retrieve image');
