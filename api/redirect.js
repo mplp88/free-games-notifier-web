@@ -18,7 +18,7 @@ function createPage({ title, description, deepLink, webUrl, imageHtml }) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="/favicon.png">
+  <link rel="icon" type="image/png" href="/logo.png">
   <title>${safeTitle} - Free Games Notifier</title>
 
   <style>
@@ -76,20 +76,6 @@ function createPage({ title, description, deepLink, webUrl, imageHtml }) {
       background: #1d4ed8;
     }
 
-    .secondary {
-      display: inline-block;
-      margin-top: 20px;
-      color: #93c5fd;
-      font-size: 13px;
-      text-decoration: none;
-    }
-
-    .brand {
-      margin-top: 28px;
-      color: #64748b;
-      font-size: 12px;
-    }
-
     .fallback-message {
       margin-top: 24px;
       color: #9ca3af;
@@ -111,6 +97,45 @@ function createPage({ title, description, deepLink, webUrl, imageHtml }) {
       border-radius: 12px;
       margin: 24px auto;
     }
+
+    .close-message {
+      margin-top: 20px;
+      color: #64748b;
+      font-size: 11px;
+    }
+
+    .footer {
+      margin-top: 28px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      color: #64748b;
+      font-size: 12px;
+    }
+
+    .brand img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      opacity: 0.8;
+    }
+
+    .home-link {
+      display: inline-block;
+      margin-top: 14px;
+      color: #93c5fd;
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .home-link:hover,
+    .fallback-message a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 
@@ -131,18 +156,59 @@ function createPage({ title, description, deepLink, webUrl, imageHtml }) {
       <a href="${safeWebUrl}">viendo el juego directamente en la web</a>.
     </p>
 
-    <div class="brand">
-      Free Games Notifier
-    </div>
+    <p class="close-message" id="close-message">
+      Esta pestaña intentará cerrarse automáticamente en 5:00.
+    </p>
+
+    <footer class="footer">
+      <div class="brand">
+        <img src="/logo.png" alt="">
+        <span>Free Games Notifier</span>
+      </div>
+
+      <a class="home-link" href="https://free-games-notifier.martinponce.com.ar/">
+        ← Volver al inicio
+      </a>
+    </footer>
   </main>
 
   <script>
     // Intentamos abrir la aplicación automáticamente.
-    // El botón permanece disponible si el navegador bloquea el intento.
+    // El botón y el fallback permanecen disponibles si falla.
     window.addEventListener('load', () => {
       setTimeout(() => {
         window.location.href = ${JSON.stringify(deepLink)};
       }, 300);
+
+      // Cuenta regresiva para intentar cerrar la pestaña.
+      const closeDelay = 5 * 60;
+      let remaining = closeDelay;
+
+      const closeMessage = document.getElementById('close-message');
+
+      const countdown = setInterval(() => {
+        remaining--;
+
+        if (remaining > 0) {
+          const minutes = Math.floor(remaining / 60);
+          const seconds = remaining % 60;
+
+          closeMessage.textContent =
+            'Esta pestaña intentará cerrarse automáticamente en ' +
+            minutes + ':' + String(seconds).padStart(2, '0') + '.';
+
+          return;
+        }
+
+        clearInterval(countdown);
+
+        // Algunos navegadores bloquean el cierre de pestañas
+        // que no fueron abiertas mediante window.open().
+        window.close();
+
+        closeMessage.textContent =
+          'Si la pestaña sigue abierta, podés cerrarla manualmente.';
+      }, 1000);
     });
   </script>
 </body>
