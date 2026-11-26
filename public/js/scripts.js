@@ -263,6 +263,7 @@ async function loadGames() {
     gamesStatus.classList.remove('error');
 
     renderGames();
+    updateAllGameExpirations();
   } catch (error) {
     console.error('Unable to load free games:', error);
 
@@ -329,11 +330,26 @@ function updateGameExpiration(element, endDate) {
 }
 
 function updateAllGameExpirations() {
-  document
-    .querySelectorAll('.game-expiration[data-end-date]')
-    .forEach((element) => {
-      updateGameExpiration(element, element.dataset.endDate);
-    });
+  const now = Date.now();
+
+  const activeGames = currentGames.filter((game) => {
+    if (!game.endDate) return true;
+
+    const endDate = new Date(game.endDate).getTime();
+
+    return !Number.isNaN(endDate) && endDate > now;
+  });
+
+  // Si venció algún juego, actualizamos el estado y renderizamos.
+  if (activeGames.length !== currentGames.length) {
+    currentGames = activeGames;
+    renderGames();
+  }
+
+  // Actualizamos las fechas de expiración de las tarjetas restantes.
+  document.querySelectorAll('.game-expiration').forEach((element) => {
+    updateGameExpiration(element, element.dataset.endDate);
+  });
 }
 
 document.getElementById('current-year').textContent = new Date().getFullYear();
